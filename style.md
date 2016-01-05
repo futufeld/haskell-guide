@@ -85,13 +85,13 @@ first, because they are more important and fewer in number:
 {% highlight haskell %}
 module Foo.Bar where
 
-import Foo.Zot
 import Foo.Bob
+import Foo.Zot
 
 import Control.Monad
-import Data.Text
 import Data.List
 import Data.Maybe
+import Data.Text
 import System.IO
 import System.Process
 {% endhighlight %}
