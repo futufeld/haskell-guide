@@ -77,7 +77,7 @@ Put imports one empty line after the module header. Always put imports
 on separate lines, and sort them alphabetically:
 
 {% highlight haskell %}
-module Foo where
+module Foo (main) where
 
 import X (foo)
 import Y (bar)
@@ -87,7 +87,7 @@ Always group import lists starting with your own project-local imports
 first, because they are more important and fewer in number:
 
 {% highlight haskell %}
-module Foo.Bar where
+module Foo.Bar (Bar, bar, mkBar) where
 
 import Foo.Bob (bob)
 import Foo.Zot (Fob (Fob), Nob (Nob, Nab), nob)
