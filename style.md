@@ -363,18 +363,8 @@ Generally, guards and pattern matches should be preferred over if-then-else
 clauses, where possible. Short cases should usually be put on a single line
 (when line length allows it).
 
-When writing non-monadic code (i.e. when not using `do`) and guards
-and pattern matches can't be used, you can align if-then-else clauses
-like you would normal expressions:
-
-{% highlight haskell %}
-foo = if …
-    then …
-    else …
-{% endhighlight %}
-
-Otherwise, you should be consistent with the 4-spaces indent rule, and the
-`then` and the `else` keyword should be aligned. Examples:
+Be consistent with the 4-spaces indent rule, and the `then` and the `else`
+keyword should be aligned. Examples:
 
 {% highlight haskell %}
 foo = do
