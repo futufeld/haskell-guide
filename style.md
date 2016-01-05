@@ -478,7 +478,7 @@ Comments
 Write proper sentences; start with a capital letter and use proper
 punctuation.
 
-### End-of-Line comments
+### End-of-line comments
 
 Separate end-of-line comments from the code using 2 spaces. Align
 comments for data type definitions. Some examples:
