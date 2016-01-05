@@ -69,14 +69,18 @@ Define `LANGUAGE` pragmas in each file. Do not use `default-extensions`.
 Imports
 -------
 
+Always use explicit import lists or `qualified` imports for standard and third
+party libraries. This makes the code more robust against changes in these
+libraries. Exception: The Prelude.
+
 Put imports one empty line after the module header. Always put imports
 on separate lines, and sort them alphabetically:
 
 {% highlight haskell %}
 module Foo where
 
-import X
-import Y
+import X (foo)
+import Y (bar)
 {% endhighlight %}
 
 Always group import lists starting with your own project-local imports
@@ -85,15 +89,14 @@ first, because they are more important and fewer in number:
 {% highlight haskell %}
 module Foo.Bar where
 
-import Foo.Bob
-import Foo.Zot
+import Foo.Bob (bob)
+import Foo.Zot (Fob (Fob), Nob (Nob, Nab), nob)
 
-import Control.Monad
-import Data.List
-import Data.Maybe
-import Data.Text
-import System.IO
-import System.Process
+import Control.Monad ((<=<))
+import Data.List.NonEmpty ((:|), nonEmpty)
+import Data.Maybe (catMaybes)
+import Data.Text (Text, pack)
+import System.Process (proc)
 {% endhighlight %}
 
 Write import lists like this:
