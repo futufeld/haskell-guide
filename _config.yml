@@ -12,11 +12,6 @@ url:                 http://ssilab.github.io/haskell-guide/
 baseurl:             /haskell-guide
 paginate:            5
 
-# About/contact
-author:
-  name:              Mark Otto
-  url:               https://twitter.com/mdo
-  email:             markdotto@gmail.com
-
 # Custom vars
-version:             1.0.0
+github:
+  repo:              https://github.com/ssilab/haskell-guide
