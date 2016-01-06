@@ -250,7 +250,7 @@ Never use `foldl`. It's [terrible][fold-rules].
 Applicatives for applying
 -------------------------
 So we've had `a`s in contexts and containers in contexts. What about functions
-in contexts? Enter [`Applicative`][applicative] and `<*>`.
+in contexts? Enter [`Applicative`][applicative] and `<*>` (pronounced "ap").
 
 `<$>` and `<*>` team up to let you apply a function to a bunch of items in
 the same type of context:
