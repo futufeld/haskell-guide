@@ -3,6 +3,9 @@ layout: page
 title: Tools
 ---
 
+* auto-gen TOC:
+{:toc}
+
 Stack
 -----
 
