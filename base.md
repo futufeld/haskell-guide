@@ -377,7 +377,8 @@ EQ <> LT <> QT                         :: Ordering
 {% endhighlight %}
 
 {% highlight haskell %}
-Data.Monoid.(<>) :: (Monoid m) => m -> m -> m
+Data.Monoid.mempty :: (Monoid m) => m
+Data.Monoid.(<>)   :: (Monoid m) => m -> m -> m
 infixr 6 <>
 {% endhighlight %}
 
@@ -385,3 +386,265 @@ The numbers in base don't have `Monoid` instances because there are two ways to
 implement it: `<> = +` and `mempty = 0` or `<> = *` and `mempty = 1`.
 
 [monoid]: https://hackage.haskell.org/package/base-4.8.1.0/docs/Data-Monoid.html
+
+Numbers
+-------
+It's best to pick the numeric type that best fits your requirements, and no
+larger. For example, encode port numbers using a `Data.Word.Word16`, not an
+`Int`.
+
+For natural numbers, unbounded `Numeric.Natural.Natural` and the bounded types
+in `Data.Word` are of use. For integers, the unbounded type is `Integer` and the
+bounded types are in `Data.Int`. For the bounded types, beware of silent
+overflow.
+
+**TODO**: example code
+
+Numbers parsed from eg. JSON can be represented by the `Scientific` type from
+[scientific][], which can represent all real numbers with a finite decimal
+representation. The disadvantage is `/` can diverge (never complete) if the
+result has an infinite decimal representation eg. 1.33333333333….
+
+Floating point numbers are inaccurate and unpredictable, but they're damn fast.
+`Double` is the type to use here.
+
+[scientific]: https://hackage.haskell.org/package/scientific
+
+Strings
+-------
+The default string type is `type String = [Char]`. This is fine for small
+strings but doesn't scale very well.
+
+Use `ByteString` from the [bytestring package][] for binary data from files, the
+network etc. `Text`, from the [text package][], should be used for character
+strings. If you ever have to encode text, choose UTF-8. If you have to decode a
+bytestring to text, be aware that some people don't choose UTF-8. Check your
+input source.
+
+**TODO**: example code
+
+Both types have lazy and strict variants; the lazy variants are useful for
+streaming, but pick strict by default.
+
+`Text`, `ByteString`, and other types that have [`IsString`][IsString] instances
+can be written as literals with the `OverloadedStrings` extension.
+
+{% highlight haskell %}
+{-# LANGUAGE OverloadedStrings #-}
+"hello world" :: String
+"hello world" :: Text
+"hello world" :: ByteString
+{% endhighlight %}
+
+[bytestring package]: https://hackage.haskell.org/package/bytestring
+[text package]: https://hackage.haskell.org/package/text
+[IsString]: https://hackage.haskell.org/package/base-4.8.1.0/docs/Data-String.html#t:IsString
+
+Ordered lists
+-------------
+The Haskell list type `[a]` is a singly-linked list, lazy in its values and
+spine (ie. the bit that isn't the values). This makes it good for streams
+and infinite lists, but not for appending or indexing into; don't use `!!`.
+Some useful functions are in `Data.List`.
+
+If you need something with constant time indexing, reach for [vector][].
+
+**TODO**: example code
+
+[vector]: https://hackage.haskell.org/package/vector
+
+Lazy vs strict types
+--------------------
+To quote [Don Stewart][lazy-vs-strict]:
+
+> If you insist on some guidelines:
+>
+> * lazy structures for data larger than memory
+> * lazy structures for infrequently used data or when you use a small part of a large structure
+>
+> And then:
+>
+> * strict structures if you do lots of updates
+> * strict structures for small, atomic data
+
+[lazy-vs-strict]: http://stackoverflow.com/a/16298217
+
+Sets
+----
+`HashSet` from [unordered-containers][] and `Set` from [containers][] are the
+main choices here. Pick the former if you have a `Hashable` instance for the
+key type, but the latter is fine unless your set gets a lot of usage.
+
+Note that sets aren't functors, so you have to use the specialised `map`
+functions in each package.
+
+**TODO**: example code
+
+[containers]: https://hackage.haskell.org/package/containers
+[unordered-containers]: https://hackage.haskell.org/package/unordered-containers
+
+Maps
+----
+Pick `Data.HashMap.Strict` from [unordered-containers][] unless you want fast
+`Int` keys, in which case use [Data.IntMap.Strict][intmap].
+
+**TODO**: example code
+
+[intmap]: https://hackage.haskell.org/package/containers-0.5.7.1/docs/Data-IntMap-Strict.html
+
+Error handling
+--------------
+Avoid throwing exceptions like you would avoid all partial code. Instead, pick
+a return type that indicates the possibility of failure, like `Maybe` or
+`Either`.
+
+{% highlight haskell %}
+import Numeric.Natural (Natural)
+
+integerToNatural :: Integer -> Maybe Natural
+integerToNatural i = if i < 0
+    then Nothing
+    else Just $ fromInteger i
+
+newtype Name = Name { nameString :: String }
+               deriving (Show)
+
+parseName :: String -> Either String Name
+parseName "" = Left "you must specify a name"
+parseName n
+    | n == "Bob" = Left "Bob is a terrible name"
+    | otherwise  = Right $ Name n
+{% endhighlight %}
+
+`Maybe`, `Either` and most other failure types are monads:
+
+{% highlight haskell %}
+data Person = Person
+    { _name :: Name
+    , _age  :: Natural }
+    deriving (Show)
+
+parseAge :: Integer -> Either String Natural
+parseAge = maybe (Left "invalid age") Right . integerToNatural
+
+mkPerson :: String -> Integer -> Either String Person
+mkPerson nameStr ageInt = do
+    name <- parseName nameStr
+    age  <- parseAge ageInt
+    pure $ Person name age
+
+mkPerson' :: String -> Integer -> Either String Person
+mkPerson' nameStr ageInt =
+    Person <$> parseName nameStr <*> parseAge ageInt
+{% endhighlight %}
+
+If you're in a monadic context, you can use `Control.Monad.Trans.Except.ExceptT`
+from [transformers][]:
+
+{% highlight haskell %}
+-- Note 'read' will throw an exception if it fails
+getInteger :: IO Integer
+getInteger = read <$> getLine
+
+mkPersonIO :: ExceptT String IO Person
+mkPersonIO = do
+    name <- ExceptT $ parseName <$> getLine
+    age  <- ExceptT $ parseAge  <$> getInteger
+    pure $ Person name age
+
+mkPersonOrCrash :: IO Person
+mkPersonOrCrash = orCrash =<< runExceptT mkPersonIO
+  where
+    orCrash :: Either String a -> IO a
+    orCrash = either error pure
+{% endhighlight %}
+
+{% highlight haskell %}
+error   :: String -> a
+getLine :: IO String
+read    :: (Read a) => String -> a
+Control.Monad.Trans.Except.runExceptT ::
+    ExceptT e m a -> m (Either e a)
+{% endhighlight %}
+
+If you want to be general over the error communication method,
+`Control.Monad.Except.MonadError` from [mtl][] is useful:
+
+{% highlight haskell %}
+{-# LANGUAGE FlexibleContexts #-}
+
+parseAgeM :: (MonadError String m) => Integer -> m Natural
+parseAgeM i = if i < 0
+    then throwError "can't have a negative age"
+    else pure $ fromInteger i
+
+parseNameM :: (MonadError String m) => String -> m Name
+parseNameM = either throwError pure . parseName
+
+mkPersonM :: (MonadError String m) => String -> Integer -> m Person
+mkPersonM nameStr ageInt =
+    Person <$> parseNameM nameStr <*> parseAgeM ageInt
+
+getIntegerM :: (MonadError String m, MonadIO m) => m Integer
+getIntegerM = parse =<< liftIO getLine
+  where
+    parse :: (MonadError String n) => String -> n Integer
+    parse s = maybe (throwError err) pure $ readMay s
+    err = "that is not an integer"
+
+mkPersonIO' :: ExceptT String IO Person
+mkPersonIO' = do
+    nameStr <- liftIO getLine
+    ageInt  <- getIntegerM
+    mkPersonM nameStr ageInt
+
+rando :: Either String Person
+rando = mkPersonM "Bob" -2
+{% endhighlight %}
+
+{% highlight haskell %}
+Safe.readMay                    :: (Read a) => String -> Maybe a
+Control.Monad.Except.throwError :: (MonadError e m) => e -> m a
+Control.Monad.Trans.liftIO      :: (MonadIO m) => IO a -> m a
+{% endhighlight %}
+
+When you need to deal with exceptions thrown by someone else's code,
+`Control.Exception` has a section on [which function to choose][catching].
+
+[transformers]: https://hackage.haskell.org/package/transformers
+[mtl]: https://hackage.haskell.org/package/mtl
+[catching]: https://hackage.haskell.org/package/base-4.8.1.0/docs/Control-Exception.html#g:3
+
+Grab-bag
+--------
+
+### ScopedTypeVariables
+
+Consider the following function:
+
+{% highlight haskell %}
+getIntegerM :: (MonadError String m, MonadIO m) => m Integer
+getIntegerM = parse =<< liftIO getLine
+  where
+    parse :: (MonadError String m) => String -> m Integer
+    parse s = maybe (throwError err) pure $ readMay s
+    err = "that is not an integer"
+{% endhighlight %}
+
+Note the repetition of `MonadError String m`: each type declaration is separate,
+so the two `m`s are actually different type variables. The `ScopedTypeVariables`
+language extension allows you to, well, scope type variables:
+
+{% highlight haskell %}
+{-# LANGUAGE ScopedTypeVariables #-}
+
+getIntegerM' :: forall m. (MonadError String m, MonadIO m)
+             => m Integer
+…
+  where
+    parse :: String -> m Integer
+    …
+{% endhighlight %}
+
+To help the extension avoid breaking existing code, you have to use `forall`
+to indicate you're going to reuse a type variable.
