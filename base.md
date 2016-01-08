@@ -436,9 +436,24 @@ can be written as literals with the `OverloadedStrings` extension.
 "hello world" :: ByteString
 {% endhighlight %}
 
+You can also use the [interpolate][] package for multi-line strings with
+interpolation of arbitrary expressions:
+
+{% highlight haskell %}
+{-# LANGUAGE QuasiQuotes #-}
+import Data.String.Interpolate.IsString (i)
+
+r :: Text
+r = [i|Hello #{name} of #{interpolate " " address}|]
+  where
+    name = "Bob"
+    address = ["123", "Boring Ave"]
+{% endhighlight %}
+
 [bytestring package]: https://hackage.haskell.org/package/bytestring
 [text package]: https://hackage.haskell.org/package/text
 [IsString]: https://hackage.haskell.org/package/base-4.8.1.0/docs/Data-String.html#t:IsString
+[interpolate]: https://hackage.haskell.org/package/interpolate
 
 Ordered lists
 -------------
