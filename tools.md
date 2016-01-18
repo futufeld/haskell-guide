@@ -19,7 +19,13 @@ $ stack new --resolver=lts-3.20 my-project
 Hoogle
 ------
 
-Use the [Stackage][] search function instead of the Haskell.org version.
+Hoogle lets you search for functions and types in existing packages. Use the
+[Stackage][] search function instead of the Haskell.org version.
+
+You can use Hoogle to search for functions have a particular type, or a similar
+type. For example, if you're sick of `head` crashing your program when you pass
+it invalid input, you could do a search for `(Read a) => String -> Maybe a` and
+find the `readMay` function in the `safe` package.
 
 HLint
 -----
