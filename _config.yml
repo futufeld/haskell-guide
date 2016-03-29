@@ -1,8 +1,5 @@
 # Permalinks
-#
-# Use of `relative_permalinks` ensures post links from the index work properly.
 permalink:           pretty
-relative_permalinks: true
 
 # Setup
 title:               Haskell Guide
@@ -11,6 +8,7 @@ description:         'Style and library guides for <a href="https://www.haskell.
 url:                 http://ssilab.github.io/haskell-guide/
 baseurl:             /haskell-guide
 paginate:            5
+gems:                [jekyll-paginate]
 
 # Custom vars
 github:
