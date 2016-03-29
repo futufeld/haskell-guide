@@ -3,13 +3,13 @@ permalink:           pretty
 
 # Setup
 title:               Haskell Guide
-tagline:             For SSIL projects
-description:         'Style and library guides for <a href="https://www.haskell.org">Haskell</a> by <a href="https://github.com/ssilab">SSIL</a>.'
-url:                 http://ssilab.github.io/haskell-guide/
+tagline:             For DSTIL projects
+description:         'Style and library guides for <a href="https://www.haskell.org">Haskell</a> by <a href="https://github.com/dstil">DSTIL</a>.'
+url:                 http://dstil.github.io/haskell-guide/
 baseurl:             /haskell-guide
 paginate:            5
 gems:                [jekyll-paginate]
 
 # Custom vars
 github:
-  repo:              https://github.com/ssilab/haskell-guide
+  repo:              https://github.com/dstil/haskell-guide

@@ -45,7 +45,7 @@ CircleCI with stack.
 [hspec]: http://hspec.github.io/
 [QuickCheck]: https://hackage.haskell.org/package/QuickCheck
 [CircleCI]: https://circleci.com
-[circle-stack]: https://github.com/ssilab/circle-stack
+[circle-stack]: https://github.com/dstil/circle-stack
 
 CLIs
 ----

@@ -41,7 +41,7 @@ Always document the module header. Format export lists as per the example.
 {% highlight haskell %}
 {-|
 Module      : $Header$
-Copyright   : (c) 2015 Swinburne Software Innovation Lab
+Copyright   : (c) 2016 Deakin Software and Technology Innovation Lab
 License     : BSD3
 
 Maintainer  : John Doe <jdoe@swin.edu.au>
