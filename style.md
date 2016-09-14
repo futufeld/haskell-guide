@@ -510,8 +510,9 @@ if:
 Warnings
 --------
 
-Code should be compilable with `-Wall -Werror`. There should be no
-warnings.
+Code should be compilable with
+`-Wall -Werror  -fwarn-incomplete-uni-patterns -fwarn-identities`.
+There should be no warnings.
 
 Credits
 -------
