@@ -511,7 +511,7 @@ Warnings
 --------
 
 Code should be compilable with
-`-Wall -Werror  -fwarn-incomplete-uni-patterns -fwarn-identities`.
+`-Wall -Werror -Wcompat -fwarn-incomplete-uni-patterns -fwarn-identities`.
 There should be no warnings.
 
 Credits
