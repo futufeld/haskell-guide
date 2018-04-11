@@ -44,7 +44,7 @@ Module      : $Header$
 Copyright   : (c) 2016 Deakin Software and Technology Innovation Lab
 License     : BSD3
 
-Maintainer  : John Doe <jdoe@swin.edu.au>
+Maintainer  : John Doe <jdoe@deakin.edu.au>
 Stability   : unstable
 Portability : portable
 
