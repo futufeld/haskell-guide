@@ -29,6 +29,10 @@ thank you.
 Surround binary operators with a single space on either side, including
 arithmetic operators. Don't insert a space after a lambda.
 
+### Vertical Aligment
+
+Vertically align the `=` and `->` syntactical elements in guards, case expressions and function clauses to assist readability.
+
 Modules
 -------
 
