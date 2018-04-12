@@ -31,7 +31,7 @@ arithmetic operators. Don't insert a space after a lambda.
 
 ### Vertical Aligment
 
-Vertically align the `=` and `->` syntactical elements in guards, case expressions and function clauses to assist readability.
+Vertically align the `=` and `->` syntactical elements in guards, case expressions and function clauses to assist readability, except when the right-hand-side expressions are so large that the alignment isn't visible.
 
 Modules
 -------
